@@ -1,20 +1,62 @@
 # A SECURITY MONITORING TOOL TO SAFEGUARD SECRETS IN AWS
+## Project Overview
+In this project, I designed and implemented a centralized security monitoring solution using AWS native tools to address critical gaps in visibility. This system provides real-time threat detection and automated alerting, ensuring that sensitive data is protected and all administrative actions are audited.
+
 Stage 1: Secret & Logging
+Create a Secret
+Secrets Manager is a secure AWS service that allowed me to safely store sensitive information. Instead of hard-coding credentials, I stored them here to maintain high security standards.
 
-Step 1: In this project, I will demonstrate how to store sensitive data securely using AWS Secrets Manager. I’m doing this project to learn how cloud environments protect credentials and prevent hard-coding secrets.
+Selecting Secret Type: I chose "Other type of secret" to store custom configuration data.
 
-Step 2: In this project, I will demonstrate how to enable CloudTrail to log account activity. I’m doing this project to learn how security teams track and audit actions in AWS.
+Configuration: I named the secret TopSecretInfo and added a description for project tracking.
 
-Step 3: In this project, I will demonstrate how to test CloudTrail by accessing my secret and verifying the log entry. I’m doing this project to understand how actions leave audit trails.
+Confirmation: The secret was successfully created with a unique Amazon Resource Name (ARN).
 
-Stage 2: Monitoring & Alerts
+Set Up CloudTrail
+CloudTrail acts as the "black box" for my AWS account, recording every API call. I set up a trail named secrets-manager-trail to audit all access attempts to my sensitive data.
 
-Step 4: In this project, I will demonstrate how to create a CloudWatch log filter for secret access events. I’m doing this project to learn how to detect sensitive activity.
+Stage 2: Verification & Monitoring
+Testing Access via CloudShell
+To verify the audit trail, I retrieved the secret value using the AWS CLI in CloudShell.
 
-Step 5: In this project, I will demonstrate how to configure a CloudWatch Alarm and SNS email alert. I’m doing this project to learn real-time
+Analyzing the Audit Trail
+In the CloudTrail Event History, I filtered by secretsmanager.amazonaws.com to locate the GetSecretValue event triggered by my previous command.
 
-Tools and concepts
-Services I used were AWS Secrets Manager for securely storing and retrieving sensitive data, AWS CloudTrail for tracking API activity and account actions, Amazon CloudWatch for log analysis, metrics, and alarms, and Amazon Simple Notification Service for sending real-time email notifications.
+CloudWatch Log Integration
+I verified that the logs were successfully flowing from CloudTrail to the centralized CloudWatch Log Group nextwork-secretsmanager-loggroup.
 
-Key concepts I learnt include secure secret management, audit logging, log forwarding, metric filters, alarm thresholds, evaluation periods, and the importance of choosing the correct statistic (such as Sum vs Average) when configuring alarms. I also learnt how to design an end-to-end monitoring pipeline — from detecting an event, to converting it into a metric, to triggering an alert — which is a core skill in cloud security and incident detection.
+Stage 3: Detection & Alerting
+Creating Metric Filters
+I transformed raw log text into a numerical metric using a filter. I defined a filter pattern for "GetSecretValue" and assigned it to the SecurityMetrics namespace.
 
+Defining the Metric:
+
+Assigning Properties:
+
+Creation Success:
+
+Configuring the Alarm and SNS
+I established a CloudWatch Alarm to trigger whenever the secret access metric recorded a value ≥ 1 within a 1-minute period.
+
+Threshold Logic:
+
+SNS Topic Creation: I created an SNS topic SecurityAlarms to forward these alerts to my SOC email.
+
+Subscription Verification: To prevent spam, I verified the subscription via a confirmation email.
+
+Final Validation & Success
+Triggering the Alarm
+I performed a final manual retrieval of the secret to test the end-to-end pipeline.
+
+Receiving the Security Incident Alert
+The system functioned perfectly: CloudTrail logged the event, CloudWatch detected the pattern, and SNS delivered an "ALARM" email to my inbox within seconds.
+
+Operational Monitoring
+I can now monitor these security events in real-time through the CloudWatch Alarm dashboard and confirm the state transitions.
+
+Key Learning Outcomes
+End-to-End Monitoring: I successfully designed a pipeline that detects, filters, and alerts on critical security events.
+
+Incident Response: I learned that choosing the correct statistic (Sum vs. Average) is vital for real-time security alerting.
+
+Compliance & Auditing: This implementation ensures my AWS account meets the "black box" standard for auditability and resource protection.
