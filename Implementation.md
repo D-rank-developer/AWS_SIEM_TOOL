@@ -1,4 +1,4 @@
-# SETUP GUIDELINES for the roject, mapped to their technical functionalities.
+# SETUP GUIDELINES for the project, mapped to their technical functionalities.
 
 ### Stage 1: Infrastructure & Secrets Management
 
